@@ -3,6 +3,7 @@
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -19,7 +20,7 @@ public class Calendar{
     static JPanel pnlCalendar;
     static int realYear, realMonth, realDay, currentYear, currentMonth;
     static ArrayList<String> Stime;
-    
+    static JOptionPane l;
     
     
     public static void main () {
@@ -51,7 +52,6 @@ public class Calendar{
        
         tblCalendar.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                 System.out.println("test2");
                  String a ="";
                   String b ="";
                    String c ="";
@@ -64,50 +64,43 @@ public class Calendar{
                 Event t = new Event(a,b,c,d,w,f,g);
                 String times = "";
                 Stime = new ArrayList<String>();
-                 System.out.println("test4");
+                
+                 
                 if (e.getClickCount()== 1){
-                     System.out.println("test3");
                     int row = tblCalendar.getSelectedRow();
                     int col = tblCalendar.getSelectedColumn();
                     Object sDate = tblCalendar.getValueAt(row, col);
                     if(EventQueue.getCurrentEvent() == e){
                         //call database
                                 
-                         System.out.println("test1" + t.getTimeSLots());
+                         
                         for (int i = 0; i < t.getTimeSLots().size(); i++){
-                            System.out.println("NICK " + t.getTimeSLots().get(i).toString());
                             times =  t.getTimeSLots().get(i).toString();
-                            System.out.println("TIMES " + times);
                             Stime.add(times);
-                            System.out.println("WE MADE IT" );
+                            
                         }
-                        System.out.println("test");
-                         JFrame frame = new JFrame();
-                         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+                        
+                         
+                         
+                        
+                         
                          JComboBox jComboBox1 = new JComboBox();
-                         //jComboBox1.addItem(Stime.listIterator());
-                        for(int i =0; i<Stime.size(); i++){
+                         for(int i =0; i<Stime.size(); i++){
                          jComboBox1.addItem(Stime.get(i));
                          System.out.println(Stime.get(i));
                         }
-                        
-                         JButton button = new JButton("Enter");
-
+                       
+                         JOptionPane.showMessageDialog(null, jComboBox1, "Select Time", JOptionPane.QUESTION_MESSAGE);
                          
-                         frame.add(button);
-                         frame.add(jComboBox1);
+                         
                          Object cmboitem = jComboBox1.getSelectedItem();
-                         System.out.println("THIS " +cmboitem);
+                         System.out.println("Selected " +cmboitem);
                          Stime.remove(cmboitem);
-                         System.out.println("I HATE NICK " + Stime);
+                         
 
-                         frame.setSize(300, 200);
-                         frame.setVisible(true);
-                        //String choice = askUser(choices);
-                        //System.out.println("selected: " + choice);
-                        
-                    //System.out.println("date selected: " + sDate.toString());
+                         l.setSize(300, 200);
+                         l.setVisible(true);
+                      
                     
                 }
             }

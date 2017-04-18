@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 /**
  *
- * @author cornonsta
+ * @author cornonsta v.1
  */
 public class MainApplet extends javax.swing.JFrame {
 
