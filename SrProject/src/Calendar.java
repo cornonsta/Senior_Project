@@ -19,8 +19,13 @@ public class Calendar{
     static JScrollPane stblCalendar; //The scrollpane
     static JPanel pnlCalendar;
     static int realYear, realMonth, realDay, currentYear, currentMonth;
-    static ArrayList<String> Stime;
+    static ArrayList<String> Tunnel1;
+    static ArrayList<String> times;
     static JOptionPane l;
+    public static String selectedDate;
+    static  JFrame f1;
+    public static String sTunnel;
+    public static JComboBox jComboBox1;
     
     
     public static void main () {
@@ -38,7 +43,7 @@ public class Calendar{
         frmMain.setSize(330, 375); //Set size to 400x400 pixels
         pane = frmMain.getContentPane(); //Get content pane
         pane.setLayout(null); //Apply null layout
-        frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Close when X is clicked
+        //frmMain.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Close when X is clicked
         
         //Create controls
         lblMonth = new JLabel ("January");
@@ -63,49 +68,127 @@ public class Calendar{
                        
                 Event t = new Event(a,b,c,d,w,f,g);
                 String times = "";
-                Stime = new ArrayList<String>();
+                Tunnel1 = new ArrayList<String>();
                 
                  
                 if (e.getClickCount()== 1){
                     int row = tblCalendar.getSelectedRow();
                     int col = tblCalendar.getSelectedColumn();
                     Object sDate = tblCalendar.getValueAt(row, col);
+                    
+                    
+                    selectedDate = lblMonth.getText() + ", " + sDate.toString() + ", " + cmbYear.getSelectedItem().toString();
+                    System.out.println("Date selected: " + selectedDate);
+                    MainApplet.sDate = selectedDate;
+                    
                     if(EventQueue.getCurrentEvent() == e){
                         //call database
                                 
                          
                         for (int i = 0; i < t.getTimeSLots().size(); i++){
                             times =  t.getTimeSLots().get(i).toString();
-                            Stime.add(times);
+                            Tunnel1.add(times);
                             
                         }
                         
                          
+                         String sql = "SELECT * FROM time, interval WHERE " + sTunnel;
                          
+                         //execute and parse
+                         //7:00!60
+                         
+                         ArrayList<String> dbTimes = new ArrayList<String>();
+                        
+                        for(int i = 0; i < MainApplet.events.size(); i++) {
+                        	
+                        	if(sTunnel=="Tunnel 1") {
+                        		Tunnel1.remove(MainApplet.events.get(i).getTime());
+                        		if(MainApplet.events.get(i).getInterval().equals("60")){
+                        			Tunnel1.remove(MainApplet.events.get(i).timeP );
+                        			System.out.println("Removed " + MainApplet.events.get(i).timeP);
+                        		}
+                        	}
+                        	
+							if(sTunnel=="Tunnel 2") {
+							                        		
+							}
+							if(sTunnel=="Tunnel 3") {
+								
+							}
+							if(sTunnel=="Tunnel 4") {
+								
+							}
+							
+                        	
+                        }
                         
                          
-                         JComboBox jComboBox1 = new JComboBox();
-                         for(int i =0; i<Stime.size(); i++){
-                         jComboBox1.addItem(Stime.get(i));
-                         System.out.println(Stime.get(i));
+                         jComboBox1 = new JComboBox();
+                         for(int i =0; i<Tunnel1.size(); i++){
+                         jComboBox1.addItem(Tunnel1.get(i));
+                         System.out.println(Tunnel1.get(i));
                         }
                        
-                         JOptionPane.showMessageDialog(null, jComboBox1, "Select Time", JOptionPane.QUESTION_MESSAGE);
+                         
+                         JButton button1 = new JButton("OK");
+                         button1.addActionListener(new ActionListener() {
+                        	    public void actionPerformed(ActionEvent e) {
+                        	        MainApplet.sTime = jComboBox1.getSelectedItem().toString();
+                        	        
+                        	        MainApplet.jLabel2.setText("Selected Date: " + MainApplet.sDate + ", " + MainApplet.sTime);
+                                    MainApplet.jPanel1.revalidate();
+                                    MainApplet.jPanel1.repaint();
+                                    
+                        	        
+                        	       frmMain.dispose();
+                        	       f1.dispose();
+                        	       
+                        	       
+                        	       
+           
+                        	    }
+                        	});
+                         
+                        
+						
+                         
+                         f1 = new JFrame("Text Form Example");
+                         f1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                         f1.getContentPane().add(jComboBox1, BorderLayout.NORTH);
+                         f1.setSize(200, 300);
+
+                         // Panel with the button
+                         JPanel p = new JPanel();
+                         p.add(button1);
+                         f1.getContentPane().add(p, BorderLayout.SOUTH);
+
+                         // Show the frame
+                         f1.pack();
+                         f1.setVisible(true);
+                         
                          
                          
                          Object cmboitem = jComboBox1.getSelectedItem();
-                         System.out.println("Selected " +cmboitem);
-                         Stime.remove(cmboitem);
                          
+                         
+                         for(int i = 0; i < MainApplet.events.size(); i++) {
+                         
+                         if(MainApplet.events.get(i).getInterval().equals("60")){
+                 			Tunnel1.remove(MainApplet.events.get(i).timeP );
+                 			System.out.println("Removed " + MainApplet.events.get(i).getTime1());
+                 		}
+                        } 
 
-                         l.setSize(300, 200);
-                         l.setVisible(true);
-                      
+                        
+                         
+                         
                     
                 }
             }
+                
             }
         });
+				        
         
         stblCalendar = new JScrollPane(tblCalendar);
         pnlCalendar = new JPanel(null);
@@ -177,6 +260,7 @@ public class Calendar{
         
         //Refresh calendar
         refreshCalendar (realMonth, realYear); //Refresh calendar
+        
     }
     
     public static void refreshCalendar(int month, int year){
