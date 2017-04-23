@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.sql.DriverManager;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.GroupLayout;
@@ -21,6 +22,7 @@ import com.mysql.jdbc.Statement;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
+
 import javax.swing.JButton;
 /**
  *
@@ -42,6 +44,10 @@ public class MainApplet extends javax.swing.JFrame {
 	public static String length;
 	public static ArrayList<Event> events = new ArrayList<Event>();
 	public static Connection con;
+	public static String n;
+	public static String p;
+	public static String em;
+	public static javax.swing.JPanel jPanel1;
 	
     public MainApplet() {
     	setBackground(Color.BLACK);
@@ -119,8 +125,8 @@ public class MainApplet extends javax.swing.JFrame {
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent email) {
                jTextField2ActionPerformed(email);
-               String p = jTextField3.getText();
-               System.out.println("test " + p);
+               String em = jTextField3.getText();
+               System.out.println("test " + em);
                 
             }
        });
@@ -152,14 +158,31 @@ public class MainApplet extends javax.swing.JFrame {
         btnNewButton.addMouseListener(new MouseAdapter() {
         	@Override
         	public void mouseClicked(MouseEvent e) {
-        		 java.sql.Statement stmt2 = con.createStatement();
+        		 java.sql.Statement stmt2 = null;
         		 
-        	        String SQL2 = "INSERT INTO ";
-        	        stmt2.executeQuery(SQL2);
-        	     
+				try {
+					stmt2 = con.createStatement();
+					String SQL2 = "INSERT INTO `Rent Information` VALUES ( '" + n +" ,' " + p +" ,' " + em + " ,'  " + tunnel +" ,' " + length +" ,'" + sTime +" ,' " + sDate +"')";
+        	        try {
+						stmt2.executeUpdate(SQL2);
+						
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+        	        
+				} catch (SQLException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+        		 
+        		 
+        		 
+        	      
+        	     System.exit(0);
         	            
         	           
-        	        System.out.println("ID: " +id+ " DeptName: " +deptName+ " City: " +city+ " State: " +state);
+        	        
         	        
         	}
         });
@@ -265,7 +288,7 @@ public class MainApplet extends javax.swing.JFrame {
         System.out.println("Connection is ok!");
         
         java.sql.Statement stmt = con.createStatement();
-        String SQL = "";
+        String SQL = "SELECT * FROM `Rent Information` ";
         ResultSet rs = stmt.executeQuery(SQL);
         
         
@@ -274,13 +297,16 @@ public class MainApplet extends javax.swing.JFrame {
             String name = rs.getString("Name");
             String phone = rs.getString("Phone");
             String email = rs.getString("Email");
-            String tunnel = rs.getString("Tunnel");
-            String interval = rs.getString("Interval");
+            String tunnel2 = rs.getString("Tunne #");
+            String interval = rs.getString("Time Length");
+            String time = rs.getString("Time Slot");
             String date = rs.getString("Date");
-            String time = rs.getString("Time");
+            
+            Event es = new Event(name, phone, email, tunnel2, interval, time, date);
+            events.add(es);
             
            
-            System.out.println("ID: " +id+ " DeptName: " +deptName+ " City: " +city+ " State: " +state);
+            System.out.println("Name: " +name+ " Phone: " +phone+ " Email: " +email+ " Tunnel: " +tunnel2 + " Time Length: " +interval+ " Time Slot: " +time+ " Date: " +date);
         }
         }
         catch ( SQLException e){
@@ -323,7 +349,6 @@ public class MainApplet extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
-    static javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
